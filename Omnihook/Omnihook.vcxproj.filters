@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{2ca0e89f-2060-41cf-b2bd-531ad32f6fa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\omnihook">
+      <UniqueIdentifier>{46b27238-9bf3-410d-aa08-5f3f0d822cfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\omnihook\Hooks">
+      <UniqueIdentifier>{08e7b2b4-5e76-450b-95a5-1346ea1fb4f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty">
+      <UniqueIdentifier>{58e999b7-2051-474a-91dd-c94554df925b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\hde64">
+      <UniqueIdentifier>{970fb4cd-0dd1-4e43-92aa-4326468bcfff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\omnihook\src">
+      <UniqueIdentifier>{0a9edc84-345a-4220-a78d-5843b06209a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\omnihook\src\Hooks">
+      <UniqueIdentifier>{a58ce492-2c28-4e1f-9753-06288f59b339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\omnihook\src\HookManager">
+      <UniqueIdentifier>{185401ba-1394-414b-8766-ea0ff3ec9613}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Omnihook.h">
+      <Filter>include\omnihook</Filter>
+    </ClInclude>
+    <ClInclude Include="Inlinehook.h">
+      <Filter>include\omnihook\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="hde64.h">
+      <Filter>thirdparty\hde64</Filter>
+    </ClInclude>
+    <ClInclude Include="pstdint.h">
+      <Filter>thirdparty\hde64</Filter>
+    </ClInclude>
+    <ClInclude Include="table64.h">
+      <Filter>thirdparty\hde64</Filter>
+    </ClInclude>
+    <ClInclude Include="HookManager.h">
+      <Filter>include\omnihook\src\HookManager</Filter>
+    </ClInclude>
+    <ClInclude Include="IHook.h">
+      <Filter>include\omnihook\src\Hooks</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Inlinehook.cpp">
+      <Filter>include\omnihook\src\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="hde64.c">
+      <Filter>thirdparty\hde64</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>include\omnihook\src</Filter>
+    </ClCompile>
+    <ClCompile Include="HookManager.cpp">
+      <Filter>include\omnihook\src\HookManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

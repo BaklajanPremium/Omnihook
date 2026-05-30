@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Omnihook/Omnihook.vcxproj" Id="177d87ae-d5ac-44a7-a3a1-ddb2c4ca0ddc" />
+</Solution>
