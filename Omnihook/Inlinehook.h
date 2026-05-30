@@ -23,5 +23,8 @@ private:
 	size_t m_hook_size{ 0 };
 	bool m_is_hooked = false;
 
+	bool VirtualAlloc1GBRange(uintptr_t m_target, size_t size);
+
+
 
 };
