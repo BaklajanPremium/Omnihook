@@ -2,6 +2,8 @@
 #include "IHook.h"
 #include <vector>
 
+//TODO implement midhook
+
 class Inlinehook : public IHook {
 public:
 	Inlinehook(uintptr_t target, uintptr_t proxy);
@@ -22,8 +24,6 @@ private:
 	std::vector<uint8_t> m_original_bytes;
 	size_t m_hook_size{ 0 };
 	bool m_is_hooked = false;
-
-	bool VirtualAlloc1GBRange(uintptr_t m_target, size_t size);
 
 
 

@@ -21,8 +21,10 @@
   <ItemGroup>
     <ClInclude Include="hde64.h" />
     <ClInclude Include="HookManager.h" />
+    <ClInclude Include="HookUtils.h" />
     <ClInclude Include="IHook.h" />
     <ClInclude Include="Inlinehook.h" />
+    <ClInclude Include="MidHook.h" />
     <ClInclude Include="Omnihook.h" />
     <ClInclude Include="pstdint.h" />
     <ClInclude Include="table64.h" />
@@ -30,8 +32,15 @@
   <ItemGroup>
     <ClCompile Include="hde64.c" />
     <ClCompile Include="HookManager.cpp" />
+    <ClCompile Include="HookUtils.cpp" />
     <ClCompile Include="Inlinehook.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MidHook.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Bridge.asm">
+      <FileType>Document</FileType>
+    </MASM>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
@@ -61,7 +70,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -69,6 +78,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -150,12 +160,13 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>

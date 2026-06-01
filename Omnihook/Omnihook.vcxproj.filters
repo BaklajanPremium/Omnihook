@@ -25,13 +25,19 @@
     <Filter Include="include\omnihook\src\HookManager">
       <UniqueIdentifier>{185401ba-1394-414b-8766-ea0ff3ec9613}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\omnihook\Utils">
+      <UniqueIdentifier>{3f2a98af-3f0d-409f-b41b-68ceab6e8c10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\omnihook\Hooks\Inlinehook">
+      <UniqueIdentifier>{b650db89-91a5-496e-aed7-27934fda2b71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\omnihook\Hooks\MidHook">
+      <UniqueIdentifier>{992731ed-7f5d-4549-8792-e3ff9502ae4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Omnihook.h">
       <Filter>include\omnihook</Filter>
-    </ClInclude>
-    <ClInclude Include="Inlinehook.h">
-      <Filter>include\omnihook\Hooks</Filter>
     </ClInclude>
     <ClInclude Include="hde64.h">
       <Filter>thirdparty\hde64</Filter>
@@ -48,11 +54,17 @@
     <ClInclude Include="IHook.h">
       <Filter>include\omnihook\src\Hooks</Filter>
     </ClInclude>
+    <ClInclude Include="HookUtils.h">
+      <Filter>include\omnihook\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Inlinehook.h">
+      <Filter>include\omnihook\Hooks\Inlinehook</Filter>
+    </ClInclude>
+    <ClInclude Include="MidHook.h">
+      <Filter>include\omnihook\Hooks\MidHook</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Inlinehook.cpp">
-      <Filter>include\omnihook\src\Hooks</Filter>
-    </ClCompile>
     <ClCompile Include="hde64.c">
       <Filter>thirdparty\hde64</Filter>
     </ClCompile>
@@ -62,5 +74,19 @@
     <ClCompile Include="HookManager.cpp">
       <Filter>include\omnihook\src\HookManager</Filter>
     </ClCompile>
+    <ClCompile Include="HookUtils.cpp">
+      <Filter>include\omnihook\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Inlinehook.cpp">
+      <Filter>include\omnihook\Hooks\Inlinehook</Filter>
+    </ClCompile>
+    <ClCompile Include="MidHook.cpp">
+      <Filter>include\omnihook\Hooks\MidHook</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Bridge.asm">
+      <Filter>include\omnihook\Hooks\MidHook</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

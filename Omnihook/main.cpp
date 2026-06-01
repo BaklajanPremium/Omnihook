@@ -2,15 +2,17 @@
 #include <windows.h>
 #include <vector>
 #include "Inlinehook.h"
+#include "MidHook.h"
 
 using TargetFunc_t = int(__fastcall*)(int);
+using FloatFunc_t = float(*)(float, float);
 
 IHook* g_Hook1 = nullptr;
 IHook* g_Hook2 = nullptr;
 IHook* g_Hook3 = nullptr;
 
 // -------------------------------------------------------------------------
-// Proxy Interceptors
+// Proxy Interceptors (Standard Hooks)
 // -------------------------------------------------------------------------
 int __fastcall ProxyFunction1(int value) {
     std::cout << "  [Proxy 1] Intercepted! Calling original trampoline...\n";
@@ -39,6 +41,38 @@ int __fastcall ProxyFunction3(int value) {
     return -1;
 }
 
+// -------------------------------------------------------------------------
+// MidHook Interceptors (Context Manipulation)
+// -------------------------------------------------------------------------
+void __cdecl MidHookProxy(RegisterContext* regs) {
+    std::cout << "  [MidHook Proxy] Intercepted Live Thread Context!\n";
+    std::cout << "    RCX (Input Argument) : " << std::dec << regs->rcx << "\n";
+    std::cout << "    RAX (Current State)  : 0x" << std::hex << std::uppercase << regs->rax << "\n";
+    std::cout << "    RFLAGS               : 0x" << std::hex << std::uppercase << regs->rflags << "\n";
+
+    // DEMONSTRATION: Modify the live register context dynamically!
+    std::cout << "    -> Changing live RCX value from " << std::dec << regs->rcx << " to 100...\n";
+    regs->rcx = 100;
+}
+
+void __cdecl FloatMidHookProxy(RegisterContext* regs) {
+    std::cout << "  [Float MidHook Proxy] Intercepted Vector Context!\n";
+
+    // Cast the lower 32-bits of the 128-bit XMM records to raw floats
+    float* xmm0_ptr = reinterpret_cast<float*>(&regs->xmm0.low);
+    float* xmm1_ptr = reinterpret_cast<float*>(&regs->xmm1.low);
+
+    std::cout << "    XMM0 (Input Float 1) : " << *xmm0_ptr << "\n";
+    std::cout << "    XMM1 (Input Float 2) : " << *xmm1_ptr << "\n";
+
+    // DEMONSTRATION: Intercept the scalar multiplier and bump it on the fly
+    std::cout << "    -> Changing live XMM1 value from " << *xmm1_ptr << " to 10.0...\n";
+    *xmm1_ptr = 10.0f;
+}
+
+// -------------------------------------------------------------------------
+// Helper Utility
+// -------------------------------------------------------------------------
 uintptr_t CreateExecutableTarget(const std::vector<uint8_t>& opcodes) {
     void* exec_mem = VirtualAlloc(NULL, opcodes.size(), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
     if (!exec_mem) return 0;
@@ -68,32 +102,18 @@ int main() {
     };
 
     uintptr_t target1_addr = CreateExecutableTarget(cond_jump_shellcode);
-    std::cout << std::hex << target1_addr << std::endl;
     TargetFunc_t Target1 = reinterpret_cast<TargetFunc_t>(target1_addr);
-
-    std::cout << "\n[x64dbg Debug Info]\n";
-    std::cout << "  Target Function Address : 0x" << std::hex << std::uppercase << target1_addr << "\n";
-    std::cout << "  Proxy Interceptor Addr  : 0x" << std::hex << std::uppercase << reinterpret_cast<uintptr_t>(&ProxyFunction1) << "\n";
 
     g_Hook1 = new Inlinehook(target1_addr, reinterpret_cast<uintptr_t>(&ProxyFunction1));
 
     if (g_Hook1->Hook()) {
-        std::cout << "  Trampoline Address      : 0x" << std::hex << std::uppercase << g_Hook1->GetOriginal() << "\n\n";
         std::cout << "  -> Hook applied successfully!\n";
-
-        // 2. CRITICAL PAUSE: Halt execution so you can attach x64dbg
-        std::cout << "[!] Press ENTER here to execute...\n";
-        std::cin.get();
-
         std::cout << std::dec;
-
         std::cout << "  Executing hooked function now...\n";
         std::cout << "  With Hook (input 0)   : " << Target1(0) << "\n";
 
-        g_Hook1->Unhook();
-        std::cin.get();
-        std::cin.get();
-
+        if (g_Hook1->Unhook())
+            std::cout << "Unhooked successfully\n";
     }
     else {
         std::cout << "  !! Hook 1 failed to apply.\n";
@@ -132,8 +152,8 @@ int main() {
         std::cout << "  -> Hook applied successfully!\n";
         std::cout << "  With Hook   : " << Target2(0) << " (Expected: 20)\n";
 
-        g_Hook2->Unhook();
-        std::cout << "  -> Unhooked cleanly.\n";
+        if (g_Hook2->Unhook())
+            std::cout << "Unhooked successfully\n";
     }
     else {
         std::cout << "  !! Hook 2 failed to apply.\n";
@@ -169,8 +189,8 @@ int main() {
         std::cout << "  -> Hook applied successfully!\n";
         std::cout << "  With Hook   : " << Target3(0) << " (Expected: 42)\n";
 
-        g_Hook3->Unhook();
-        std::cout << "  -> Unhooked cleanly.\n";
+        if (g_Hook3->Unhook())
+            std::cout << "Unhooked successfully\n";
     }
     else {
         std::cout << "  !! Hook 3 failed to apply.\n";
@@ -179,6 +199,104 @@ int main() {
     VirtualFree(reinterpret_cast<void*>(target3_addr), 0, MEM_RELEASE);
 
     std::cout << "==================================================\n";
+
+    // -------------------------------------------------------------------------
+    // TEST CASE 4: MidHook Context Interception & Register Manipulation
+    // -------------------------------------------------------------------------
+    std::cout << "[TEST 4] Testing MidHook Register Context Interception\n";
+
+    std::vector<uint8_t> midhook_shellcode = {
+        0x89, 0xC8,         // 0: mov eax, ecx         (2 bytes) -> Hook location
+        0x6B, 0xC0, 0x05,   // 2: imul eax, eax, 5     (3 bytes) -> Stolen up to offset 5
+        0xC3                // 5: ret                  (1 byte)
+    };
+
+    uintptr_t target4_addr = CreateExecutableTarget(midhook_shellcode);
+    TargetFunc_t Target4 = reinterpret_cast<TargetFunc_t>(target4_addr);
+
+    std::cout << "  Executing target before hook with input (2)...\n";
+    std::cout << "  Before Hook : " << std::dec << Target4(2) << " (Expected: 10)\n\n";
+
+    std::cout << "[x64dbg Debug Info]\n";
+    std::cout << "  Target Function Address : 0x" << std::hex << std::uppercase << target4_addr << "\n";
+    std::cout << "  MidHook Proxy Address   : 0x" << std::hex << std::uppercase << reinterpret_cast<uintptr_t>(&MidHookProxy) << "\n";
+
+    std::cout << "[!] Press ENTER to execute the MidHook pipeline...\n";
+    std::cin.get();
+
+    MidHook* g_MidHook = new MidHook(target4_addr, reinterpret_cast<uintptr_t>(&MidHookProxy));
+
+    if (g_MidHook->Hook()) {
+        std::cout << "  -> MidHook applied successfully!\n\n";
+        std::cout << "  Executing hooked function with input (2)...\n";
+        int result = Target4(2);
+
+        std::cout << "\n  Execution Returned from MidHook Framework!\n";
+        std::cout << "  Final Return Value : " << std::dec << result << " (Expected: 500 if context modification succeeded)\n\n";
+
+        if (g_MidHook->Unhook()) {
+            std::cout << "  MidHook removed successfully.\n";
+            std::cout << "  Executing post-unhook with input (2): " << Target4(2) << " (Expected: 10)\n";
+        }
+    }
+    else {
+        std::cout << "  !! MidHook failed to apply.\n";
+    }
+
+    delete g_MidHook;
+    VirtualFree(reinterpret_cast<void*>(target4_addr), 0, MEM_RELEASE);
+
+    std::cout << "==================================================\n";
+
+    // -------------------------------------------------------------------------
+    // TEST CASE 5: MidHook Vector Context Interception & XMM Manipulation
+    // -------------------------------------------------------------------------
+    std::cout << "[TEST 5] Testing MidHook Floating-Point (XMM) Context Interception\n";
+
+    std::vector<uint8_t> float_shellcode = {
+        0xF3, 0x0F, 0x10, 0xD0, // 0: movss xmm2, xmm0 (4 bytes) -> Hook location
+        0xF3, 0x0F, 0x59, 0xC1, // 4: mulss xmm0, xmm1 (4 bytes) -> Total 8 bytes stolen
+        0xC3                    // 8: ret              (1 byte)
+    };
+
+    uintptr_t target5_addr = CreateExecutableTarget(float_shellcode);
+    FloatFunc_t Target5 = reinterpret_cast<FloatFunc_t>(target5_addr);
+
+    std::cout << "  Executing target before hook with inputs (5.0, 3.0)...\n";
+    std::cout << "  Before Hook : " << Target5(5.0f, 3.0f) << " (Expected: 15.0)\n\n";
+
+    std::cout << "[x64dbg Debug Info]\n";
+    std::cout << "  Target Float Address    : 0x" << std::hex << std::uppercase << target5_addr << "\n";
+    std::cout << "  Float Proxy Address     : 0x" << std::hex << std::uppercase << reinterpret_cast<uintptr_t>(&FloatMidHookProxy) << "\n";
+
+    std::cout << "[!] Press ENTER to execute the Float MidHook pipeline...\n";
+    std::cin.get();
+
+    MidHook* g_FloatMidHook = new MidHook(target5_addr, reinterpret_cast<uintptr_t>(&FloatMidHookProxy));
+
+    if (g_FloatMidHook->Hook()) {
+        std::cout << "  -> Float MidHook applied successfully!\n\n";
+        std::cout << "  Executing hooked float function with inputs (5.0, 3.0)...\n";
+        float float_result = Target5(5.0f, 3.0f);
+
+        std::cout << "\n  Execution Returned from Float MidHook Framework!\n";
+        // Input A (5.0f) * Modified Input B (10.0f) = 50.0f
+        std::cout << "  Final Return Value : " << float_result << " (Expected: 50.0 if XMM modification succeeded)\n\n";
+
+        if (g_FloatMidHook->Unhook()) {
+            std::cout << "  Float MidHook removed successfully.\n";
+            std::cout << "  Executing post-unhook with inputs (5.0, 3.0): " << Target5(5.0f, 3.0f) << " (Expected: 15.0)\n";
+        }
+    }
+    else {
+        std::cout << "  !! Float MidHook failed to apply.\n";
+    }
+
+    delete g_FloatMidHook;
+    VirtualFree(reinterpret_cast<void*>(target5_addr), 0, MEM_RELEASE);
+
+    std::cout << "==================================================\n";
     system("pause");
     return 0;
 }
+
