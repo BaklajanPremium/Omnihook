@@ -26,7 +26,7 @@ extern "C" void MasterDispatcher(uintptr_t hookId, RegisterContext* regs) {
 		regs->rax = hook.trampoline_address;
 	}
 	else {
-		regs->rax = hookId;
+		regs->rax = 0xDEADBEEF;
 	}
 }
 
@@ -36,6 +36,9 @@ MidHook::MidHook(uintptr_t target, uintptr_t proxy) : m_target(target), m_proxy(
 MidHook::~MidHook() {
 	if (m_is_hooked) {
 		Unhook();
+	}
+	if (m_trampoline) {
+		VirtualFree(reinterpret_cast<void*>(m_trampoline), 0, MEM_RELEASE);
 	}
 }
 
@@ -49,7 +52,7 @@ bool MidHook::Hook() {
 	if (!VirtualProtect(reinterpret_cast<void*>(m_target), stolen_size, PAGE_EXECUTE_READWRITE, &old))
 		return false;
 
-	m_trampoline = AllocateWithin1GBRange(m_target, stolen_size + sizeof(AbsoluteJumpx64));
+	m_trampoline = AllocateWithin1GBRange(m_target, stolen_size + sizeof(AbsoluteJumpx64) + 128);
 	if (!m_trampoline) {
 		DWORD temp;
 		VirtualProtect(reinterpret_cast<void*>(m_target), stolen_size, old, &temp);

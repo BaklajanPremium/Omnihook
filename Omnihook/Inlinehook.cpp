@@ -12,6 +12,9 @@ Inlinehook::~Inlinehook() {
 	if (m_is_hooked) {
 		Unhook();
 	}
+	if (m_trampoline) {
+		VirtualFree(reinterpret_cast<void*>(m_trampoline), 0, MEM_RELEASE);
+	}
 }
 
 
@@ -35,7 +38,7 @@ bool Inlinehook::Hook() {
 		return false;
 	}
 
-	m_trampoline = AllocateWithin1GBRange(m_target, stolen_size + sizeof(AbsoluteJumpx64));
+	m_trampoline = AllocateWithin1GBRange(m_target, stolen_size + sizeof(AbsoluteJumpx64) + 128);
 
 	if (!m_trampoline) {
 		DWORD temp;
