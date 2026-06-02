@@ -3,3 +3,4 @@
 #include "IHook.h"
 
 #include "Inlinehook.h"
+#include "MidHook.h"

@@ -28,6 +28,7 @@
     <ClInclude Include="Omnihook.h" />
     <ClInclude Include="pstdint.h" />
     <ClInclude Include="table64.h" />
+    <ClInclude Include="VMTHooks.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hde64.c" />
@@ -36,6 +37,7 @@
     <ClCompile Include="Inlinehook.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MidHook.cpp" />
+    <ClCompile Include="VMTHooks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="Bridge.asm">

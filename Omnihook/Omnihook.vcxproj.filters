@@ -34,6 +34,9 @@
     <Filter Include="include\omnihook\Hooks\MidHook">
       <UniqueIdentifier>{992731ed-7f5d-4549-8792-e3ff9502ae4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\omnihook\Hooks\VMTHooks">
+      <UniqueIdentifier>{b963bfa3-f42e-464f-b575-284d4b71a93d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Omnihook.h">
@@ -63,6 +66,9 @@
     <ClInclude Include="MidHook.h">
       <Filter>include\omnihook\Hooks\MidHook</Filter>
     </ClInclude>
+    <ClInclude Include="VMTHooks.h">
+      <Filter>include\omnihook\Hooks\VMTHooks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hde64.c">
@@ -82,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="MidHook.cpp">
       <Filter>include\omnihook\Hooks\MidHook</Filter>
+    </ClCompile>
+    <ClCompile Include="VMTHooks.cpp">
+      <Filter>include\omnihook\Hooks\VMTHooks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
