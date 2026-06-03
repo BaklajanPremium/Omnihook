@@ -1,153 +1,126 @@
 #include <iostream>
 #include <windows.h>
-#include <iomanip>
-
-#include "VMTHooks.h" // Your updated VMTHook header
-
-// -------------------------------------------------------------------------
-// Multiple Inheritance Base Interfaces
-// -------------------------------------------------------------------------
-class IBaseRenderable {
-public:
-    virtual void Draw() = 0;
-    virtual void Resize(int width, int height) = 0;
-};
-
-class IBaseEntity {
-public:
-    virtual void Update(float deltaTime) = 0;
-    virtual void TakeDamage(int amount) = 0;
-};
-
-class IBaseNetworked {
-public:
-    virtual void Serialize() = 0;
-};
+#include <thread>
+#include <vector>
+#include "HWBPHook.h" // Your updated Hardware Breakpoint Hook header
 
 // -------------------------------------------------------------------------
-// The Target Dummy Class
-// This layout produces exactly 3 sequential vtable pointers (vptrs)
-// followed by standard primitive member data.
+// Target Function to Hook
 // -------------------------------------------------------------------------
-class DummyEntity : public IBaseRenderable, public IBaseEntity, public IBaseNetworked {
-public:
-    // Simulated class members for ReClass alignment verification
-    int m_health = 100;
-    int m_shield = 50;
-    float m_posX = 142.5f;
-    float m_posY = 512.8f;
+// __declspec(noinline) ensures the compiler doesn't optimize this function out
+// by embedding it directly inside the calling loops.
+__declspec(noinline) void CriticalFunction(int threadId, int actionCount) {
+    std::cout << "    [Original] Executing core logic for Thread " << threadId
+        << " (Action #" << actionCount << ")\n";
+}
 
-    // IBaseRenderable Implementations (VTable 0)
-    void Draw() override {
-        std::cout << "  [Original Draw] Rendering entity model.\n";
+// -------------------------------------------------------------------------
+// Hook Proxy & Type Definitions
+// -------------------------------------------------------------------------
+typedef void(*tCriticalFn)(int, int);
+tCriticalFn oCriticalFunction = nullptr;
+
+void hkCriticalFunction(int threadId, int actionCount) {
+    // Collect the current thread executing this proxy block
+    DWORD currentThreadId = GetCurrentThreadId();
+
+    std::cout << "  [Hooked Proxy] Intercepted call on OS Thread ID: " << currentThreadId << "\n";
+    std::cout << "                 Intercepted Arguments -> Thread Ref: " << threadId
+        << ", Count: " << actionCount << "\n";
+
+    // Modifying intercepted argument payload to prove data mutation control
+    int modifiedCount = actionCount + 1000;
+
+    {
+        // Leverage your RAII Scoped Guard to safely arm the TLS bypass flag
+        HWBPHook::ScopedBypass guard;
+
+        // Invoke the original function pointer seamlessly
+        oCriticalFunction(threadId, modifiedCount);
     }
-    void Resize(int width, int height) override {
-        std::cout << "  [Original Resize] Resolution changed to: " << width << "x" << height << "\n";
-    }
-
-    // IBaseEntity Implementations (VTable 1 - Offset +0x08)
-    void Update(float deltaTime) override {
-        std::cout << "  [Original Update] Ticking physics loop with dt: " << deltaTime << "\n";
-    }
-    void TakeDamage(int amount) override {
-        m_health -= amount;
-        std::cout << "  [Original TakeDamage] Lost " << amount << " HP. Current Health: " << m_health << "\n";
-    }
-
-    // IBaseNetworked Implementations (VTable 2 - Offset +0x10)
-    void Serialize() override {
-        std::cout << "  [Original Serialize] Compressing net delta updates.\n";
-    }
-};
+    // Guard falls out of scope here: m_bypass_flag is guaranteed to reset to false
+}
 
 // -------------------------------------------------------------------------
-// Hook Proxies (Interceptors)
+// Multi-Threaded Worker Function
 // -------------------------------------------------------------------------
-typedef void(__fastcall* tUpdateFn)(void* pThis, float deltaTime);
-tUpdateFn oUpdate = nullptr;
-
-void __fastcall hkUpdate(void* pThis, float deltaTime) {
-    std::cout << "  [Hooked Update] Intercepted! Boosting deltaTime matrix...\n";
-
-    // Call original through your engine's trampoline tracking
-    if (oUpdate) {
-        oUpdate(pThis, deltaTime * 2.0f);
+void WorkerLoop(int virtualThreadId, bool& runFlag) {
+    int counter = 0;
+    while (runFlag) {
+        CriticalFunction(virtualThreadId, ++counter);
+        std::this_thread::sleep_for(std::chrono::milliseconds(400));
     }
 }
 
 // -------------------------------------------------------------------------
-// Main Testing Pipeline
+// Main Pipeline Execution
 // -------------------------------------------------------------------------
 int main() {
     std::cout << "==================================================\n";
-    std::cout << "        VMT MULTIPLE INHERITANCE TEST BENCH       \n";
+    std::cout << "       HWBP ENGINE MULTI-THREAD TEST BENCH        \n";
     std::cout << "==================================================\n\n";
 
-    // Instantiate the dummy object on the heap
-    DummyEntity* pEntity = new DummyEntity();
+    // Set up original pointer fallback reference
+    oCriticalFunction = reinterpret_cast<tCriticalFn>(&CriticalFunction);
 
-    // Output critical pointers for your ReClass setup
-    std::cout << "[ReClass.NET Connection Info]\n";
-    std::cout << "  Class Instance Address : 0x" << std::hex << std::uppercase << reinterpret_cast<uintptr_t>(pEntity) << "\n\n";
-
-    std::cout << "[Expected Memory Offsets]\n";
-    std::cout << "  +0x00 : vptr -> IBaseRenderable VTable\n";
-    std::cout << "  +0x08 : vptr -> IBaseEntity VTable\n";
-    std::cout << "  +0x10 : vptr -> IBaseNetworked VTable\n";
-    std::cout << "  +0x18 : int  -> m_health (" << std::dec << pEntity->m_health << ")\n";
-    std::cout << "  +0x1C : int  -> m_shield (" << pEntity->m_shield << ")\n\n";
-
-    std::cout << "[*] Open ReClass, attach to this process, and map out the offsets.\n";
-    std::cout << "[!] Press ENTER inside this console to run the VMTHook test code...\n";
-    std::cin.get();
-
-    // -------------------------------------------------------------------------
-    // Executing the VMT Hooking Engine Test
-    // -------------------------------------------------------------------------
-    std::cout << "Executing initial function calls before hook:\n";
-    pEntity->Update(0.016f);
+    std::cout << "[*] Executing original function call naked:\n";
+    CriticalFunction(0, 1);
     std::cout << "\n";
 
-    // Target the IBaseEntity vptr slot directly (offset +0x08 from object base)
-    uintptr_t* pObjectFields = reinterpret_cast<uintptr_t*>(pEntity);
-    void* pIBaseEntitySlot = &pObjectFields[1]; // Index 1 = Offset +0x08
+    // Initialize your HWBP Hook instance
+    uintptr_t targetAddress = reinterpret_cast<uintptr_t>(&CriticalFunction);
+    uintptr_t proxyAddress = reinterpret_cast<uintptr_t>(&hkCriticalFunction);
 
-    std::cout << "[*] Applying Shadow VMT Hook to IBaseEntity::Update (Index 0)...\n";
+    HWBPHook* hwbp = new HWBPHook(targetAddress, proxyAddress);
 
-    // We pass the explicit pointer to the +0x08 slot as the object instance
-    VMTHook* entityHook = new VMTHook(pIBaseEntitySlot, 0, reinterpret_cast<void*>(&hkUpdate), HookType::Default);
+    std::cout << "[*] Initializing execution worker threads...\n";
+    bool keepRunning = true;
 
-    if (entityHook->Hook()) {
-        std::cout << "  -> Shadow Hook successfully installed!\n";
-        oUpdate = reinterpret_cast<tUpdateFn>(entityHook->GetOriginal());
+    // Spawn two distinct workers running concurrently on separate OS timelines
+    std::thread worker1(WorkerLoop, 1, std::ref(keepRunning));
+    std::thread worker2(WorkerLoop, 2, std::ref(keepRunning));
 
-        std::cout << "  -> Look at ReClass offset +0x08. It now points to your heap allocation!\n\n";
+    // Allow them to stream a couple normal runs to the console output window
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-        std::cout << "Executing function call with active hook:\n";
-        pEntity->Update(0.016f);
-        std::cout << "\n";
+    std::cout << "\n[!] Press ENTER inside this console to globally apply the HWBP Hook...\n";
+    std::cin.get();
 
-        std::cout << "[!] Press ENTER to trigger Unhook routines...\n";
+    std::cout << "[*] Committing hardware breakpoint to CPU debug registers...\n";
+    if (hwbp->Hook()) {
+        std::cout << "  -> Hardware breakpoint successfully initialized process-wide!\n";
+        std::cout << "  -> Assigned Slot: DR" << static_cast<int>(hwbp->GetOriginal()) << "\n\n";
+
+        std::cout << "[*] Monitoring concurrent worker execution stream (Look at altered argument counts):\n";
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+
+        std::cout << "\n[!] Press ENTER to trigger Unhook routines...\n";
         std::cin.get();
 
-        if (entityHook->Unhook()) {
-            std::cout << "  -> Hook removed cleanly. Object table restored.\n\n";
+        std::cout << "[*] Restoring thread debug contexts...\n";
+        if (hwbp->Unhook()) {
+            std::cout << "  -> Hook removed cleanly. All DRx lines wiped.\n\n";
 
-            std::cout << "Executing function call after unhook:\n";
-            pEntity->Update(0.016f);
+            std::cout << "[*] Monitoring post-unhook execution stream:\n";
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+        else {
+            std::cout << "  !! Failed to strip HWBP configuration.\n";
         }
     }
     else {
-        std::cout << "  !! Failed to apply VMT Hook.\n";
+        std::cout << "  !! Failed to apply process-wide hardware breakpoint.\n";
     }
 
+    // Shut down worker background loops gracefully
+    std::cout << "\n[*] Terminating worker threads...\n";
+    keepRunning = false;
 
-    std::cout << "\n==================================================\n";
-    system("pause");
+    if (worker1.joinable()) worker1.join();
+    if (worker2.joinable()) worker2.join();
 
-    // Cleanup allocations
-    delete entityHook;
-    delete pEntity;
+    std::cout << "==================================================\n";
 
+    delete hwbp;
     return 0;
 }

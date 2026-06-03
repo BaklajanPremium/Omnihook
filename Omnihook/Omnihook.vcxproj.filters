@@ -37,6 +37,9 @@
     <Filter Include="include\omnihook\Hooks\VMTHooks">
       <UniqueIdentifier>{b963bfa3-f42e-464f-b575-284d4b71a93d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\omnihook\Hooks\HWBPHook">
+      <UniqueIdentifier>{58fd8c76-e212-473b-bc53-4021c283de8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Omnihook.h">
@@ -69,6 +72,9 @@
     <ClInclude Include="VMTHooks.h">
       <Filter>include\omnihook\Hooks\VMTHooks</Filter>
     </ClInclude>
+    <ClInclude Include="HWBPHook.h">
+      <Filter>include\omnihook\Hooks\HWBPHook</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="hde64.c">
@@ -91,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="VMTHooks.cpp">
       <Filter>include\omnihook\Hooks\VMTHooks</Filter>
+    </ClCompile>
+    <ClCompile Include="HWBPHook.cpp">
+      <Filter>include\omnihook\Hooks\HWBPHook</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

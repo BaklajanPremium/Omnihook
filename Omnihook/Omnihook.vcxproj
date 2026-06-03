@@ -22,6 +22,7 @@
     <ClInclude Include="hde64.h" />
     <ClInclude Include="HookManager.h" />
     <ClInclude Include="HookUtils.h" />
+    <ClInclude Include="HWBPHook.h" />
     <ClInclude Include="IHook.h" />
     <ClInclude Include="Inlinehook.h" />
     <ClInclude Include="MidHook.h" />
@@ -34,6 +35,7 @@
     <ClCompile Include="hde64.c" />
     <ClCompile Include="HookManager.cpp" />
     <ClCompile Include="HookUtils.cpp" />
+    <ClCompile Include="HWBPHook.cpp" />
     <ClCompile Include="Inlinehook.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MidHook.cpp" />

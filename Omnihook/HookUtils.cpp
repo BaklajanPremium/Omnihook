@@ -64,7 +64,7 @@ size_t HookUtils::RelocateInstructions(uintptr_t target, uintptr_t trampoline, s
 		uint32_t len = hde64_disasm(reinterpret_cast<void*>(target + src_offset), &hs);
 
 		if (hs.flags & F_ERROR)
-			return false;
+			return 0;
 
 		if (((hs.flags & F_DISP32) && ((hs.modrm_mod == 0 && hs.modrm_rm == 5)) || hs.opcode == 0xE8 || hs.opcode == 0xE9)) {
 			memcpy(reinterpret_cast<void*>(trampoline + dst_offset),

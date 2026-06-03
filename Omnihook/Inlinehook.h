@@ -2,8 +2,6 @@
 #include "IHook.h"
 #include <vector>
 
-//TODO implement midhook
-
 class Inlinehook : public IHook {
 public:
 	Inlinehook(uintptr_t target, uintptr_t proxy);
