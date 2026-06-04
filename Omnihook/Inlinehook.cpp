@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include "Inlinehook.h"
-#include "hde64.h"
 #include "HookUtils.h"
 
 using namespace HookUtils;

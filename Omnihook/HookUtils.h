@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <vector>
-#include "hde64.h"
+#include <Windows.h>
 #include "Zydis/Zydis.h"
 
 
