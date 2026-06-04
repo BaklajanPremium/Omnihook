@@ -141,4 +141,4 @@ Omnihook is designed for **x64 Windows** targets.
 
 1. Open `Omnihook.slnx` or load `Omnihook.vcxproj` in Visual Studio (2026 recommended).
 2. Configure your build (Debug/Release, x64).
-3. Build the solution. The project compiles to a library or DLL containing the hook manager.
+3. Build the solution. The project compiles to a static library (`.lib`).
