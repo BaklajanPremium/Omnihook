@@ -2,14 +2,7 @@
 #include <cstdint>
 #include <vector>
 #include <Windows.h>
-#include "Zydis/Zydis.h"
-
-
-//#ifdef _DEBUG
-//#pragma comment(lib, "Zydis_D.lib")
-//#else 
-//#pragma comment(lib, "Zydis.lib")
-//#endif
+#include <Zydis/Zydis.h>
 
 
 #pragma pack(push, 1)

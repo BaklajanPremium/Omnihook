@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "IHook.h"
-#include "Omnihook.h"
+#include "Includes/Omnihook.h"
 
 class VMTHook : public IHook {
 public:
