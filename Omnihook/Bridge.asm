@@ -22,7 +22,7 @@ SharedMidHookStub PROC
 	push r14
 	push r15
 
-	sub rsp, 200h ; allocate 16 * 16 bytes for ymm registers
+	sub rsp, 200h ; allocate 16 * 32 bytes for ymm registers
 
 	vmovdqu ymmword ptr [rsp + 000h], ymm0
     vmovdqu ymmword ptr [rsp + 020h], ymm1
