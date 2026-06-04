@@ -1,110 +1,95 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="include">
+    <Filter Include="project">
       <UniqueIdentifier>{2ca0e89f-2060-41cf-b2bd-531ad32f6fa9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\omnihook">
+    <Filter Include="project\omnihook">
       <UniqueIdentifier>{46b27238-9bf3-410d-aa08-5f3f0d822cfa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\omnihook\Hooks">
+    <Filter Include="project\omnihook\Hooks">
       <UniqueIdentifier>{08e7b2b4-5e76-450b-95a5-1346ea1fb4f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="thirdparty">
-      <UniqueIdentifier>{58e999b7-2051-474a-91dd-c94554df925b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="thirdparty\hde64">
-      <UniqueIdentifier>{970fb4cd-0dd1-4e43-92aa-4326468bcfff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\omnihook\src">
-      <UniqueIdentifier>{0a9edc84-345a-4220-a78d-5843b06209a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\omnihook\src\Hooks">
-      <UniqueIdentifier>{a58ce492-2c28-4e1f-9753-06288f59b339}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\omnihook\src\HookManager">
-      <UniqueIdentifier>{185401ba-1394-414b-8766-ea0ff3ec9613}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\omnihook\Utils">
-      <UniqueIdentifier>{3f2a98af-3f0d-409f-b41b-68ceab6e8c10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\omnihook\Hooks\Inlinehook">
+    <Filter Include="project\omnihook\Hooks\Inlinehook">
       <UniqueIdentifier>{b650db89-91a5-496e-aed7-27934fda2b71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\omnihook\Hooks\MidHook">
+    <Filter Include="project\omnihook\Hooks\MidHook">
       <UniqueIdentifier>{992731ed-7f5d-4549-8792-e3ff9502ae4a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\omnihook\Hooks\VMTHooks">
+    <Filter Include="project\omnihook\Hooks\VMTHooks">
       <UniqueIdentifier>{b963bfa3-f42e-464f-b575-284d4b71a93d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="include\omnihook\Hooks\HWBPHook">
+    <Filter Include="project\omnihook\Hooks\HWBPHook">
       <UniqueIdentifier>{58fd8c76-e212-473b-bc53-4021c283de8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project\omnihook\src">
+      <UniqueIdentifier>{0a9edc84-345a-4220-a78d-5843b06209a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project\omnihook\src\Hooks">
+      <UniqueIdentifier>{a58ce492-2c28-4e1f-9753-06288f59b339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project\omnihook\src\HookManager">
+      <UniqueIdentifier>{185401ba-1394-414b-8766-ea0ff3ec9613}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project\omnihook\Utils">
+      <UniqueIdentifier>{3f2a98af-3f0d-409f-b41b-68ceab6e8c10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="project\omnihook\Include">
+      <UniqueIdentifier>{9fb251be-8361-4f32-a5d5-885858dc1190}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Omnihook.h">
-      <Filter>include\omnihook</Filter>
-    </ClInclude>
-    <ClInclude Include="hde64.h">
-      <Filter>thirdparty\hde64</Filter>
-    </ClInclude>
-    <ClInclude Include="pstdint.h">
-      <Filter>thirdparty\hde64</Filter>
-    </ClInclude>
-    <ClInclude Include="table64.h">
-      <Filter>thirdparty\hde64</Filter>
-    </ClInclude>
     <ClInclude Include="HookManager.h">
-      <Filter>include\omnihook\src\HookManager</Filter>
+      <Filter>project\omnihook\src\HookManager</Filter>
     </ClInclude>
     <ClInclude Include="IHook.h">
-      <Filter>include\omnihook\src\Hooks</Filter>
+      <Filter>project\omnihook\src\Hooks</Filter>
     </ClInclude>
     <ClInclude Include="HookUtils.h">
-      <Filter>include\omnihook\Utils</Filter>
+      <Filter>project\omnihook\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Inlinehook.h">
-      <Filter>include\omnihook\Hooks\Inlinehook</Filter>
+      <Filter>project\omnihook\Hooks\Inlinehook</Filter>
     </ClInclude>
     <ClInclude Include="MidHook.h">
-      <Filter>include\omnihook\Hooks\MidHook</Filter>
+      <Filter>project\omnihook\Hooks\MidHook</Filter>
     </ClInclude>
     <ClInclude Include="VMTHooks.h">
-      <Filter>include\omnihook\Hooks\VMTHooks</Filter>
+      <Filter>project\omnihook\Hooks\VMTHooks</Filter>
     </ClInclude>
     <ClInclude Include="HWBPHook.h">
-      <Filter>include\omnihook\Hooks\HWBPHook</Filter>
+      <Filter>project\omnihook\Hooks\HWBPHook</Filter>
+    </ClInclude>
+    <ClInclude Include="Omnihook.h">
+      <Filter>project\omnihook\Include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="hde64.c">
-      <Filter>thirdparty\hde64</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>include\omnihook\src</Filter>
-    </ClCompile>
     <ClCompile Include="HookManager.cpp">
-      <Filter>include\omnihook\src\HookManager</Filter>
+      <Filter>project\omnihook\src\HookManager</Filter>
     </ClCompile>
     <ClCompile Include="HookUtils.cpp">
-      <Filter>include\omnihook\Utils</Filter>
+      <Filter>project\omnihook\Utils</Filter>
     </ClCompile>
     <ClCompile Include="Inlinehook.cpp">
-      <Filter>include\omnihook\Hooks\Inlinehook</Filter>
+      <Filter>project\omnihook\Hooks\Inlinehook</Filter>
     </ClCompile>
     <ClCompile Include="MidHook.cpp">
-      <Filter>include\omnihook\Hooks\MidHook</Filter>
+      <Filter>project\omnihook\Hooks\MidHook</Filter>
     </ClCompile>
     <ClCompile Include="VMTHooks.cpp">
-      <Filter>include\omnihook\Hooks\VMTHooks</Filter>
+      <Filter>project\omnihook\Hooks\VMTHooks</Filter>
     </ClCompile>
     <ClCompile Include="HWBPHook.cpp">
-      <Filter>include\omnihook\Hooks\HWBPHook</Filter>
+      <Filter>project\omnihook\Hooks\HWBPHook</Filter>
+    </ClCompile>
+    <ClCompile Include="Omnihook.cpp">
+      <Filter>project\omnihook\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="Bridge.asm">
-      <Filter>include\omnihook\Hooks\MidHook</Filter>
+      <Filter>project\omnihook\Hooks\MidHook</Filter>
     </MASM>
   </ItemGroup>
 </Project>

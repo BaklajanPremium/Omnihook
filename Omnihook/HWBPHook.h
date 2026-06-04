@@ -30,6 +30,7 @@ private:
 	uintptr_t m_trampoline{ 0 };
 	int m_dr_index{ -1 };
 	bool m_is_hooked = false;
+	PVOID m_exception_handle;
 
 	static thread_local bool m_bypass_flag;
 

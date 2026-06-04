@@ -1,12 +1,12 @@
 #include <Windows.h>
-#include "Omnihook.h"
+#include "Inlinehook.h"
 #include "hde64.h"
 #include "HookUtils.h"
 
 using namespace HookUtils;
 
 
-Inlinehook::Inlinehook(uintptr_t target, uintptr_t proxy) : m_target(target), m_proxy(proxy) {}
+Inlinehook::Inlinehook(uintptr_t target, uintptr_t proxy, void** original) : m_target(target), m_proxy(proxy), m_original_out(original) {}
 
 Inlinehook::~Inlinehook() {
 	if (m_is_hooked) {
@@ -85,6 +85,10 @@ bool Inlinehook::Hook() {
 
 	DWORD temp;
 	VirtualProtect(reinterpret_cast<void*>(m_target), stolen_size, oldProt, &temp);
+
+	if (m_original_out != nullptr) {
+		*m_original_out = reinterpret_cast<void*>(m_trampoline);
+	}
 
 	m_hook_size = stolen_size;
 	m_is_hooked = true;

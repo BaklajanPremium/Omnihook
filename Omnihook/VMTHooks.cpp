@@ -1,6 +1,7 @@
 #include "VMTHooks.h"
 #include "HookUtils.h"
 
+using namespace Omnihook;
 
 VMTHook::VMTHook(void* p_object_instance, int index, void* proxy, HookType hook_type)
 	: m_object_instance(p_object_instance), m_index(index),

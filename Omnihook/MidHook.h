@@ -4,29 +4,28 @@
 
 
 #pragma pack(push, 1)
-struct XMMRegister {
-    uint64_t low;
-    uint64_t high;
+struct YMMRegister {
+    uint64_t qwords[4];
 };
 
 
 struct RegisterContext {
-    XMMRegister xmm0;
-    XMMRegister xmm1;
-    XMMRegister xmm2;
-    XMMRegister xmm3;
-    XMMRegister xmm4;
-    XMMRegister xmm5;
-    XMMRegister xmm6;
-    XMMRegister xmm7;
-    XMMRegister xmm8;
-    XMMRegister xmm9;
-    XMMRegister xmm10;
-    XMMRegister xmm11;
-    XMMRegister xmm12;
-    XMMRegister xmm13;
-    XMMRegister xmm14;
-    XMMRegister xmm15;
+    YMMRegister ymm0;
+    YMMRegister ymm1;
+    YMMRegister ymm2;
+    YMMRegister ymm3;
+    YMMRegister ymm4;
+    YMMRegister ymm5;
+    YMMRegister ymm6;
+    YMMRegister ymm7;
+    YMMRegister ymm8;
+    YMMRegister ymm9;
+    YMMRegister ymm10;
+    YMMRegister ymm11;
+    YMMRegister ymm12;
+    YMMRegister ymm13;
+    YMMRegister ymm14;
+    YMMRegister ymm15;
 
     uint64_t r15;
     uint64_t r14;

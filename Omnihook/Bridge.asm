@@ -22,30 +22,30 @@ SharedMidHookStub PROC
 	push r14
 	push r15
 
-	sub rsp, 100h ; allocate 16 * 16 bytes for XMM registers
+	sub rsp, 200h ; allocate 16 * 16 bytes for ymm registers
 
-	movdqu xmmword ptr [rsp + 000h], xmm0
-    movdqu xmmword ptr [rsp + 010h], xmm1
-    movdqu xmmword ptr [rsp + 020h], xmm2
-    movdqu xmmword ptr [rsp + 030h], xmm3
-    movdqu xmmword ptr [rsp + 040h], xmm4
-    movdqu xmmword ptr [rsp + 050h], xmm5
-    movdqu xmmword ptr [rsp + 060h], xmm6
-    movdqu xmmword ptr [rsp + 070h], xmm7
-    movdqu xmmword ptr [rsp + 080h], xmm8
-    movdqu xmmword ptr [rsp + 090h], xmm9
-    movdqu xmmword ptr [rsp + 0A0h], xmm10
-    movdqu xmmword ptr [rsp + 0B0h], xmm11
-    movdqu xmmword ptr [rsp + 0C0h], xmm12
-    movdqu xmmword ptr [rsp + 0D0h], xmm13
-    movdqu xmmword ptr [rsp + 0E0h], xmm14
-    movdqu xmmword ptr [rsp + 0F0h], xmm15
+	vmovdqu ymmword ptr [rsp + 000h], ymm0
+    vmovdqu ymmword ptr [rsp + 020h], ymm1
+    vmovdqu ymmword ptr [rsp + 040h], ymm2
+    vmovdqu ymmword ptr [rsp + 060h], ymm3
+    vmovdqu ymmword ptr [rsp + 080h], ymm4
+    vmovdqu ymmword ptr [rsp + 0A0h], ymm5
+    vmovdqu ymmword ptr [rsp + 0C0h], ymm6
+    vmovdqu ymmword ptr [rsp + 0E0h], ymm7
+    vmovdqu ymmword ptr [rsp + 100h], ymm8
+    vmovdqu ymmword ptr [rsp + 120h], ymm9
+    vmovdqu ymmword ptr [rsp + 140h], ymm10
+    vmovdqu ymmword ptr [rsp + 160h], ymm11
+    vmovdqu ymmword ptr [rsp + 180h], ymm12
+    vmovdqu ymmword ptr [rsp + 1A0h], ymm13
+    vmovdqu ymmword ptr [rsp + 1C0h], ymm14
+    vmovdqu ymmword ptr [rsp + 1E0h], ymm15
 
 
 	mov rbx, rsp ; save the unaligned stack pointer
 	and rsp, -16 ; align stack pointer to 16 bytes
 
-	mov rcx, [rbx + 180h] ; load hookId from stack into 1st arg
+	mov rcx, [rbx + 280h] ; load hookId from stack into 1st arg
 	mov rdx, rbx ; load RegisterContext into 2nd arg
 
 	sub rsp, 32 ; shadow space
@@ -54,25 +54,25 @@ SharedMidHookStub PROC
 
 	mov rsp, rbx ; restore original stack
 
-	movdqu xmm0,  xmmword ptr [rsp + 000h]
-    movdqu xmm1,  xmmword ptr [rsp + 010h]
-    movdqu xmm2,  xmmword ptr [rsp + 020h]
-    movdqu xmm3,  xmmword ptr [rsp + 030h]
-    movdqu xmm4,  xmmword ptr [rsp + 040h]
-    movdqu xmm5,  xmmword ptr [rsp + 050h]
-    movdqu xmm6,  xmmword ptr [rsp + 060h]
-    movdqu xmm7,  xmmword ptr [rsp + 070h]
-    movdqu xmm8,  xmmword ptr [rsp + 080h]
-    movdqu xmm9,  xmmword ptr [rsp + 090h]
-    movdqu xmm10, xmmword ptr [rsp + 0A0h]
-    movdqu xmm11, xmmword ptr [rsp + 0B0h]
-    movdqu xmm12, xmmword ptr [rsp + 0C0h]
-    movdqu xmm13, xmmword ptr [rsp + 0D0h]
-    movdqu xmm14, xmmword ptr [rsp + 0E0h]
-    movdqu xmm15, xmmword ptr [rsp + 0F0h]
+	vmovdqu ymm0,  ymmword ptr [rsp + 000h]
+    vmovdqu ymm1,  ymmword ptr [rsp + 020h]
+    vmovdqu ymm2,  ymmword ptr [rsp + 040h]
+    vmovdqu ymm3,  ymmword ptr [rsp + 060h]
+    vmovdqu ymm4,  ymmword ptr [rsp + 080h]
+    vmovdqu ymm5,  ymmword ptr [rsp + 0A0h]
+    vmovdqu ymm6,  ymmword ptr [rsp + 0C0h]
+    vmovdqu ymm7,  ymmword ptr [rsp + 0E0h]
+    vmovdqu ymm8,  ymmword ptr [rsp + 100h]
+    vmovdqu ymm9,  ymmword ptr [rsp + 120h]
+    vmovdqu ymm10, ymmword ptr [rsp + 140h]
+    vmovdqu ymm11, ymmword ptr [rsp + 160h]
+    vmovdqu ymm12, ymmword ptr [rsp + 180h]
+    vmovdqu ymm13, ymmword ptr [rsp + 1A0h]
+    vmovdqu ymm14, ymmword ptr [rsp + 1C0h]
+    vmovdqu ymm15, ymmword ptr [rsp + 1E0h]
 
    
-    add rsp, 100h ; free the allocated bytes for XMM registers
+    add rsp, 200h ; free the allocated bytes for ymm registers
 
 
 	pop r15

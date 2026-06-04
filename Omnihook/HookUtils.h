@@ -2,6 +2,14 @@
 #include <cstdint>
 #include <vector>
 #include "hde64.h"
+#include "Zydis/Zydis.h"
+
+
+//#ifdef _DEBUG
+//#pragma comment(lib, "Zydis_D.lib")
+//#else 
+//#pragma comment(lib, "Zydis.lib")
+//#endif
 
 
 #pragma pack(push, 1)
@@ -19,7 +27,7 @@ struct RelativeJumpx64 {
 
 
 namespace HookUtils {
-	bool IsTerminal(const hde64s& hs);
+	bool IsTerminal(const ZydisDecodedInstruction& instr);
 	size_t CalcRequiredSize(uintptr_t target, size_t required_size);
 	uintptr_t AllocateWithin1GBRange(uintptr_t target, size_t size);
 

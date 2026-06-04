@@ -48,8 +48,8 @@ bool HWBPHook::Hook() {
 
 	static bool veh_registered = false;
 	if (!veh_registered) {
-		PVOID handle = AddVectoredExceptionHandler(1, HWBPHook::PvectoredExceptionHandler);
-		if (!handle) return false;
+		m_exception_handle = AddVectoredExceptionHandler(1, HWBPHook::PvectoredExceptionHandler);
+		if (!m_exception_handle) return false;
 		veh_registered = true;
 	}
 
@@ -68,14 +68,15 @@ bool HWBPHook::Hook() {
 	if (Thread32First(snapshot, &te)) {
 		do {
 			if (te.th32OwnerProcessID == GetCurrentProcessId()) {
-				if (te.th32ThreadID == GetCurrentThreadId()) {
-					continue;
-				}
 
 				HANDLE hThread = OpenThread(THREAD_GET_CONTEXT | THREAD_SET_CONTEXT | THREAD_SUSPEND_RESUME, false, te.th32ThreadID);
 				if (hThread) {
 
-					SuspendThread(hThread);
+					bool isCurrentThread = (te.th32ThreadID == GetCurrentThreadId());
+
+					if (!isCurrentThread) {
+						SuspendThread(hThread);
+					}
 
 					CONTEXT ctx = { 0 };
 					ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
@@ -113,7 +114,10 @@ bool HWBPHook::Hook() {
 							success = true;
 						}
 					}
-					ResumeThread(hThread);
+
+					if (!isCurrentThread) {
+						ResumeThread(hThread);
+					}
 					CloseHandle(hThread);
 				}
 				
@@ -145,14 +149,15 @@ bool HWBPHook::Unhook() {
 	if (Thread32First(snapshot, &te)) {
 		do {
 			if (te.th32OwnerProcessID == GetCurrentProcessId()) {
-				if (te.th32ThreadID == GetCurrentThreadId()) {
-					continue;
-				}
 
 					HANDLE hThread = OpenThread(THREAD_GET_CONTEXT | THREAD_SET_CONTEXT | THREAD_SUSPEND_RESUME, false, te.th32ThreadID);
 					if (hThread) {
-						SuspendThread(hThread);
 
+						bool isCurrentThread = (te.th32ThreadID == GetCurrentThreadId());
+
+						if (!isCurrentThread) {
+							SuspendThread(hThread);
+						}
 						CONTEXT ctx = { 0 };
 						ctx.ContextFlags = CONTEXT_DEBUG_REGISTERS;
 
@@ -171,7 +176,9 @@ bool HWBPHook::Unhook() {
 							SetThreadContext(hThread, &ctx);
 						}
 
-						ResumeThread(hThread);
+						if (!isCurrentThread) {
+							ResumeThread(hThread);
+						}
 						CloseHandle(hThread);
 					}
 			}
@@ -184,6 +191,8 @@ bool HWBPHook::Unhook() {
 	if (it != m_active_hooks.end()) {
 		m_active_hooks.erase(it);
 	}
+
+	RemoveVectoredExceptionHandler(m_exception_handle);
 
 	m_is_hooked = false;
 	return true;
