@@ -23,9 +23,9 @@
     <ClInclude Include="HookUtils.h" />
     <ClInclude Include="HWBPHook.h" />
     <ClInclude Include="IHook.h" />
+    <ClInclude Include="includes\Omnihook.h" />
     <ClInclude Include="Inlinehook.h" />
     <ClInclude Include="MidHook.h" />
-    <ClInclude Include="Omnihook.h" />
     <ClInclude Include="VMTHooks.h" />
   </ItemGroup>
   <ItemGroup>

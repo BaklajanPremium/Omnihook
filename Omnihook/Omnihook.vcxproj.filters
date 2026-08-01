@@ -60,7 +60,7 @@
     <ClInclude Include="HWBPHook.h">
       <Filter>project\omnihook\Hooks\HWBPHook</Filter>
     </ClInclude>
-    <ClInclude Include="Omnihook.h">
+    <ClInclude Include="includes\Omnihook.h">
       <Filter>project\omnihook\Include</Filter>
     </ClInclude>
   </ItemGroup>

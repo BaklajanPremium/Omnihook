@@ -79,15 +79,18 @@ bool Inlinehook::Hook() {
 	   	detour.displacement = (int32_t)rel;
 	   	memcpy(patch.data(), &detour, sizeof(RelativeJumpx64));
 	   }
-	   
-	   memcpy(reinterpret_cast<void*>(m_target), patch.data(), stolen_size);
 
-	DWORD temp;
-	VirtualProtect(reinterpret_cast<void*>(m_target), stolen_size, oldProt, &temp);
 
 	if (m_original_out != nullptr) {
 		*m_original_out = reinterpret_cast<void*>(m_trampoline);
 	}
+
+	memcpy(reinterpret_cast<void*>(m_target), patch.data(), stolen_size);
+
+	DWORD temp;
+	VirtualProtect(reinterpret_cast<void*>(m_target), stolen_size, oldProt, &temp); // TODO: use syscalls so if we hook ntprotectvirtualmemory or kernle32 we dont trigger from unhooking / hooking
+
+
 
 	m_hook_size = stolen_size;
 	m_is_hooked = true;
