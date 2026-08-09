@@ -3,7 +3,6 @@ EXTERN MasterDispatcher : PROC
 .code
 
 SharedMidHookStub PROC
-	
 	pushfq
 
 	push rax
@@ -41,7 +40,6 @@ SharedMidHookStub PROC
     vmovdqu ymmword ptr [rsp + 1C0h], ymm14
     vmovdqu ymmword ptr [rsp + 1E0h], ymm15
 
-
 	mov rbx, rsp ; save the unaligned stack pointer
 	and rsp, -16 ; align stack pointer to 16 bytes
 
@@ -71,9 +69,7 @@ SharedMidHookStub PROC
     vmovdqu ymm14, ymmword ptr [rsp + 1C0h]
     vmovdqu ymm15, ymmword ptr [rsp + 1E0h]
 
-   
     add rsp, 200h ; free the allocated bytes for ymm registers
-
 
 	pop r15
 	pop r14
@@ -89,15 +85,12 @@ SharedMidHookStub PROC
 	pop rbx
 	pop rdx
 	pop rcx
+    mov [rsp+16],rax ; spoofing return address by value returned from MasterDispatcher
 	pop rax
 
 	popfq
 
-	add rsp, 8
-	jmp rax ; jump to what we set in MasterDispatcher
-
-
-
+	ret ; jump to what we set in MasterDispatcher, but without RAX modification
 SharedMidHookStub ENDP
 
 END
