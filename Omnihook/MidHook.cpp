@@ -26,6 +26,7 @@ extern "C" uintptr_t MasterDispatcher(uintptr_t hookId, RegisterContext* regs) {
 
 		returnAddress = hook.trampoline_address;
 	}
+	//Maybe better to log and kill thread if hook not found?
 	
 	return returnAddress;
 }
