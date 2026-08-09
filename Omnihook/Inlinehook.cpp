@@ -108,6 +108,7 @@ bool Inlinehook::Unhook() {
 	DWORD temp;
 	VirtualProtect(reinterpret_cast<void*>(m_target), m_hook_size, old, &temp);
 
+	if (m_original_out) *m_original_out = reinterpret_cast<void*>(m_target); //Making it safe to use 'original function' after unhook
 	if (m_trampoline) {
 		VirtualFree(reinterpret_cast<void*>(m_trampoline), 0, MEM_RELEASE);
 		m_trampoline = 0;
