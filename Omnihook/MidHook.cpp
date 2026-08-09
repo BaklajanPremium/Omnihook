@@ -12,7 +12,8 @@ static std::unordered_map<uintptr_t, MidHookData> g_mid_hooks;
 
 extern "C" void SharedMidHookStub();
 
-extern "C" void MasterDispatcher(uintptr_t hookId, RegisterContext* regs) {
+extern "C" uintptr_t MasterDispatcher(uintptr_t hookId, RegisterContext* regs) {
+	uintptr_t returnAddress = 0xDEADBEEF;
 	auto it = g_mid_hooks.find(hookId);
 
 	if (it != g_mid_hooks.end()) {
@@ -23,11 +24,10 @@ extern "C" void MasterDispatcher(uintptr_t hookId, RegisterContext* regs) {
 			callback(regs);
 		}
 
-		regs->rax = hook.trampoline_address;
+		returnAddress = hook.trampoline_address;
 	}
-	else {
-		regs->rax = 0xDEADBEEF;
-	}
+	
+	return returnAddress;
 }
 
 
